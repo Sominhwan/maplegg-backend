@@ -1,0 +1,76 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.14'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'kr.co.maple'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '11'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// 스프링 부트로 웹 개발 시 사용
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// postgre 
+	implementation 'org.postgresql:postgresql:42.6.0'
+
+   	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+   
+    // log4j
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'   // log4j2
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.3'   // log4j2
+    implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4', version: '1.16'
+
+	// mybatis 추가
+	//implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
+	//implementation 'org.mybatis:mybatis-spring:2.0.6'
+	//implementation 'org.mybatis:mybatis:3.5.11'	
+	// 시큐리티
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	// JWT
+	//implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    //runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    //runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	// 자바 메일 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-mail' 
+    // Redis
+    //implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+	
+	// https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core
+	implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
+	
+	// https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
+	implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
+	// GSON
+	implementation 'com.google.code.gson:gson:2.8.8'
+	// AWS S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
