@@ -33,7 +33,7 @@ public class MainService {
 	public HttpEntity<?> characterRankingOverall() {
 	    // String characterName = URLEncoder.encode("법사로키우기", StandardCharsets.UTF_8);
 	    MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-	    params.add("date", "2023-12-22");
+	    params.add("date", "2023-12-31");
 	    params.add("world_type", "0");
 	    
 	    RankingListDTO rankingDTOList = WebClient.create(BASE_URL + "/maplestory/v1/ranking/overall")
