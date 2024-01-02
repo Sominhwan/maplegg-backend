@@ -5,6 +5,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class RankingListDTO {
-	private List<RankingDTO> ranking;
+public class DojangRankingListDTO {
+	private List<DojangRankingDTO> ranking;
 }
