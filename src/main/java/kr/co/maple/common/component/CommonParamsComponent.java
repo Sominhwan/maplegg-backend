@@ -14,10 +14,17 @@ public class CommonParamsComponent {
         params.add("difficulty", difficulty);
         return params;
     }
-	// 넥슨 Maple Api 캐릭터 조회 Common Params 
+	// 넥슨 Maple Api 캐릭터 ocid 조회 Common Params 
     public MultiValueMap<String, String> mapleCharacterCommonParams(String characterName) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("character_name", characterName);
+        return params;
+    }
+	// 넥슨 Maple Api 캐릭터 기본 정보 조회 Common Params 
+    public MultiValueMap<String, String> mapleCharacterBasicCommonParams(String ocid, String date) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("ocid", ocid);
+        params.add("date", date);
         return params;
     }
 }

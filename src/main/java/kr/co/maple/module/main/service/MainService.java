@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import kr.co.maple.common.component.CommonParamsComponent;
 import kr.co.maple.common.model.ResDTO;
 import kr.co.maple.common.service.WebClientService;
+import kr.co.maple.module.main.model.CharacterBasicDTO;
 import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.main.model.DojangRankingDTO;
 import kr.co.maple.module.main.model.DojangRankingListDTO;
@@ -41,11 +42,16 @@ public class MainService {
     @PreDestroy
     @Cacheable("characterRankingCache")
     public HttpEntity<ResDTO<Top10RankingListDTO>> characterRankingOverall() {
+    	// Top10 랭킹 정보
         List<RankingDTO> baseTop10Rankings = getRankingList("0");
         List<RankingDTO> rebootTop10Rankings = getRankingList("1");
         List<DojangRankingDTO> dojangTop10Rankings = getDojangRankingList();
-        CharacterIdDTO characterIdDTO = getCharacterId("법사로키우기");
-        log.info(characterIdDTO);
+        // 랭킹 1위 ocid
+        CharacterIdDTO baseTop1OCID = getCharacterId(baseTop10Rankings.get(0).getCharacterName());
+        // 랭킹 1위 캐릭터 기본 정보
+        CharacterBasicDTO characterBasic = getCharacterBasic(baseTop1OCID.getOcid());
+           
+        log.info("값 --> " + characterBasic);
         Top10RankingListDTO top10RankingListDTO = Top10RankingListDTO.builder()
                 .baseRankings(baseTop10Rankings)
                 .rebootRankings(rebootTop10Rankings)
@@ -94,5 +100,15 @@ public class MainService {
         );
     	return characterIdDTO;
     }
-    // 캐릭터 정보 조회
+    // 캐릭터 기본 정보 조회
+    private CharacterBasicDTO getCharacterBasic(String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, "2024-01-02");
+		CharacterBasicDTO characterBasicDTO = webClientService.webClientGetApi(
+				BASE_URL + "/maplestory/v1/character/basic",
+				params,
+				API_KEY,
+				CharacterBasicDTO.class
+		); 
+		return characterBasicDTO;
+    }    
 }
