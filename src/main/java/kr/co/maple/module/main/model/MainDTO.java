@@ -7,8 +7,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Top10RankingListDTO {
+public class MainDTO {
 	private List<RankingDTO> baseRankings;
 	private List<RankingDTO> rebootRankings;
 	private List<DojangRankingDTO> dojangRankings;
+	
+	private Top1LevelRankingDTO top1LevelRanking;
 }

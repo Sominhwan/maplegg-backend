@@ -22,9 +22,10 @@ import kr.co.maple.module.main.model.CharacterBasicDTO;
 import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.main.model.DojangRankingDTO;
 import kr.co.maple.module.main.model.DojangRankingListDTO;
+import kr.co.maple.module.main.model.MainDTO;
 import kr.co.maple.module.main.model.RankingDTO;
 import kr.co.maple.module.main.model.RankingListDTO;
-import kr.co.maple.module.main.model.Top10RankingListDTO;
+import kr.co.maple.module.main.model.Top1LevelRankingDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,7 +42,7 @@ public class MainService {
 	
     @PreDestroy
     @Cacheable("characterRankingCache")
-    public HttpEntity<ResDTO<Top10RankingListDTO>> characterRankingOverall() {
+    public HttpEntity<ResDTO<MainDTO>> characterRankingOverall() {
     	// Top10 랭킹 정보
         List<RankingDTO> baseTop10Rankings = getRankingList("0");
         List<RankingDTO> rebootTop10Rankings = getRankingList("1");
@@ -50,18 +51,26 @@ public class MainService {
         CharacterIdDTO baseTop1OCID = getCharacterId(baseTop10Rankings.get(0).getCharacterName());
         // 랭킹 1위 캐릭터 기본 정보
         CharacterBasicDTO characterBasic = getCharacterBasic(baseTop1OCID.getOcid());
-           
-        log.info("값 --> " + characterBasic);
-        Top10RankingListDTO top10RankingListDTO = Top10RankingListDTO.builder()
+        Top1LevelRankingDTO top1LevelRanking = Top1LevelRankingDTO.builder()
+        		.characterName(characterBasic.getCharacterName())
+        		.worldName(characterBasic.getWorldName())
+        		.characterLevel(characterBasic.getCharacterLevel())
+        		.characterClass(characterBasic.getCharacterClass())
+        		.characterExp(characterBasic.getCharacterExp())
+        		.characterImage(characterBasic.getCharacterImage())
+        		.build();
+        		
+        MainDTO mainDTO = MainDTO.builder()
                 .baseRankings(baseTop10Rankings)
                 .rebootRankings(rebootTop10Rankings)
                 .dojangRankings(dojangTop10Rankings)
+                .top1LevelRanking(top1LevelRanking)
                 .build();
-        log.info("Top10 랭킹 리스트 --> " + top10RankingListDTO);		
+        log.info("Top10 랭킹 리스트 및 Top1랭킹 정보 --> " + mainDTO);		
         return new ResponseEntity<>(
-                ResDTO.<Top10RankingListDTO>builder()
+                ResDTO.<MainDTO>builder()
                         .code(0)
-                        .data(top10RankingListDTO)
+                        .data(mainDTO)
                         .message("캐릭터 랭킹 정보를 불러왔습니다.")
                         .build(),
                         HttpStatus.OK
