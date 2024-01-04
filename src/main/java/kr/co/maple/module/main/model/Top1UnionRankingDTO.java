@@ -11,6 +11,6 @@ public class Top1UnionRankingDTO {
 	private int characterLevel;
 	private String characterClass;
 	private int unionLevel;
-	private int unionPower;
+	private long unionPower;
 	private String characterImage;
 }

@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
 import kr.co.maple.common.component.CommonParamsComponent;
+import kr.co.maple.common.component.MapleApiTimeCheckComponent;
 import kr.co.maple.common.model.ResDTO;
 import kr.co.maple.common.service.WebClientService;
 import kr.co.maple.common.util.DateUtil;
 import kr.co.maple.module.main.model.AchievementRankingDTO;
+import kr.co.maple.module.main.model.AchievementRankingListDTO;
 import kr.co.maple.module.main.model.CharacterBasicDTO;
 import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.main.model.DojangRankingDTO;
@@ -28,8 +30,12 @@ import kr.co.maple.module.main.model.DojangRankingListDTO;
 import kr.co.maple.module.main.model.MainDTO;
 import kr.co.maple.module.main.model.RankingDTO;
 import kr.co.maple.module.main.model.RankingListDTO;
+import kr.co.maple.module.main.model.Top1AchievementRankingDTO;
 import kr.co.maple.module.main.model.Top1DojangRankingDTO;
 import kr.co.maple.module.main.model.Top1LevelRankingDTO;
+import kr.co.maple.module.main.model.Top1UnionRankingDTO;
+import kr.co.maple.module.main.model.UnionRankingDTO;
+import kr.co.maple.module.main.model.UnionRankingListDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -40,6 +46,8 @@ public class MainService {
     private final DateUtil dateUtil;
     @Autowired
     private CommonParamsComponent commonParamsComponent;
+    @Autowired
+    private MapleApiTimeCheckComponent mapleApiTimeCheckComponent;
 	@Value("${maple.apiKey}")
 	private String API_KEY;
 	@Value("${maple.url}")
@@ -49,15 +57,15 @@ public class MainService {
     @Cacheable("characterRankingCache")
     public HttpEntity<ResDTO<MainDTO>> characterRankingOverall() {
     	// yyyy-mm-dd
-        String currentDate = dateUtil.get(new Date(), 2); 
-        // yyyymmdd
-        String formatDate = dateUtil.get(new Date(), 10);
+        String currentDate = mapleApiTimeCheckComponent.timeCheck(new Date(), 0);
         // yyyymmdd -> (yyyy-mm-dd) - 1day 
-        String previousDate = dateUtil.getDateFormatFrom(2, formatDate, -1);
+        String previousDate = mapleApiTimeCheckComponent.timeCheck(new Date(), 1);
     	// Top10 랭킹 정보
         List<RankingDTO> baseTop10Rankings = getRankingList(currentDate, "0");
         List<RankingDTO> rebootTop10Rankings = getRankingList(currentDate, "1");
         List<DojangRankingDTO> dojangTop10Rankings = getDojangRankingList(currentDate);
+        List<AchievementRankingDTO> achievementTop10Rankings = getAchievementRankingList(currentDate);
+        List<UnionRankingDTO> unionTop10Rankings = getUnionRankingList(currentDate);
         // 랭킹 1위 ocid
         CharacterIdDTO baseTop1OCID = getCharacterId(baseTop10Rankings.get(0).getCharacterName());
         // 랭킹 1위 캐릭터 기본 정보
@@ -83,13 +91,41 @@ public class MainService {
         		.dojangTimeRecord(dojangTop10Rankings.get(0).getDojangTimeRecord())
         		.characterImage(characterDojangInfo.getCharacterImage())
         		.build();
-        
+        // 업적 랭킹 1위 ocid
+        CharacterIdDTO acheivementTop1OCID = getCharacterId(achievementTop10Rankings.get(0).getCharacterName());
+        // 업적 랭킹 1위 캐릭터 기본 정보
+        CharacterBasicDTO characterAchievementInfo = getCharacterBasic(previousDate, acheivementTop1OCID.getOcid());
+        Top1AchievementRankingDTO top1AchievementRanking = Top1AchievementRankingDTO.builder()
+        		.characterName(characterAchievementInfo.getCharacterName())
+        		.worldName(characterAchievementInfo.getWorldName())
+        		.characterLevel(characterAchievementInfo.getCharacterLevel())
+        		.characterClass(characterAchievementInfo.getCharacterClass())
+        		.trophyGrade(achievementTop10Rankings.get(0).getTrophyGrade())
+        		.trophyScore(achievementTop10Rankings.get(0).getTrophyScore())
+        		.characterImage(characterAchievementInfo.getCharacterImage())
+        		.build();
+        // 유니온 랭킹 1위 ocid
+        CharacterIdDTO unionTop1OCID = getCharacterId(unionTop10Rankings.get(0).getCharacterName());
+        // 유니온 랭킹 1위 캐릭터 기본 정보
+        CharacterBasicDTO characterUnionInfo = getCharacterBasic(previousDate, unionTop1OCID.getOcid());
+        Top1UnionRankingDTO top1UnionRanking = Top1UnionRankingDTO.builder()
+        		.characterName(characterUnionInfo.getCharacterName())
+        		.worldName(characterUnionInfo.getWorldName())
+        		.characterLevel(characterUnionInfo.getCharacterLevel())
+        		.characterClass(characterUnionInfo.getCharacterClass())
+        		.unionLevel(unionTop10Rankings.get(0).getUnionLevel())
+        		.unionPower(unionTop10Rankings.get(0).getUnionPower())
+        		.characterImage(characterUnionInfo.getCharacterImage())
+        		.build();
+
         MainDTO mainDTO = MainDTO.builder()
                 .baseRankings(baseTop10Rankings)
                 .rebootRankings(rebootTop10Rankings)
                 .dojangRankings(dojangTop10Rankings)
                 .top1LevelRanking(top1LevelRanking)
                 .top1DojangRanking(top1DojangRanking)
+                .top1AchievementRanking(top1AchievementRanking)
+                .top1UnionRanking(top1UnionRanking)
                 .build();
         
         log.info("Top10 랭킹 리스트 및 Top1랭킹 정보 --> " + mainDTO);		
@@ -125,11 +161,27 @@ public class MainService {
         return rankingDTOList.getRanking().subList(0, Math.min(rankingDTOList.getRanking().size(), 10));
     }
     // 업적 Top10 랭킹 리스트
-//    private List<AchievementRankingDTO> get<AchievementRankingList(String date) {
-//    	
-//    }
+    private List<AchievementRankingDTO> getAchievementRankingList(String date) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, "", "");
+    	AchievementRankingListDTO achievementRankingDTOList = webClientService.webClientGetApi(
+	            BASE_URL + "/maplestory/v1/ranking/achievement",
+	            params,
+	            API_KEY,
+	            AchievementRankingListDTO.class
+	    );
+    	return achievementRankingDTOList.getRanking().subList(0, Math.min(achievementRankingDTOList.getRanking().size(), 10));
+    }
     // 유니온 Top10 랭킹 리스트
-    
+    private List<UnionRankingDTO> getUnionRankingList(String date) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleUnionRankingCommonParams(date, "");
+    	UnionRankingListDTO unionRankingDTOList = webClientService.webClientGetApi(
+	            BASE_URL + "/maplestory/v1/ranking/union",
+	            params,
+	            API_KEY,
+	            UnionRankingListDTO.class
+	    );
+    	return unionRankingDTOList.getRanking().subList(0, Math.min(unionRankingDTOList.getRanking().size(), 10));
+    }
     // 캐릭터 식별자 조회
     private CharacterIdDTO getCharacterId(String characterName) {
     	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterCommonParams(characterName);

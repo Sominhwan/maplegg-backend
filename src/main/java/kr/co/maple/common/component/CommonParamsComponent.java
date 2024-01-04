@@ -23,11 +23,9 @@ public class CommonParamsComponent {
         return params;
     }
     // 넥슨 Maple Api 유니온 랭킹 조회 Common Params
-    public MultiValueMap<String, String> mapleUnionRankingCommonParams(String date, String worldName, String ocid, String page) {
+    public MultiValueMap<String, String> mapleUnionRankingCommonParams(String date, String page) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("date", date);
-        params.add("world_name", worldName);
-        params.add("ocid", ocid);
         params.add("page", page);
         return params;
     }
