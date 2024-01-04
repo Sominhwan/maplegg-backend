@@ -14,6 +14,23 @@ public class CommonParamsComponent {
         params.add("difficulty", difficulty);
         return params;
     }
+    // 넥슨 Maple Api 업적 랭킹 조회 Common Params
+    public MultiValueMap<String, String> mapleAchievementRankingCommonParams(String date, String ocid, String page) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("date", date);
+        params.add("ocid", ocid);
+        params.add("page", page);
+        return params;
+    }
+    // 넥슨 Maple Api 유니온 랭킹 조회 Common Params
+    public MultiValueMap<String, String> mapleUnionRankingCommonParams(String date, String worldName, String ocid, String page) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("date", date);
+        params.add("world_name", worldName);
+        params.add("ocid", ocid);
+        params.add("page", page);
+        return params;
+    }
 	// 넥슨 Maple Api 캐릭터 ocid 조회 Common Params 
     public MultiValueMap<String, String> mapleCharacterCommonParams(String characterName) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

@@ -1,5 +1,6 @@
 package kr.co.maple.module.main.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PreDestroy;
@@ -18,6 +19,8 @@ import org.springframework.util.MultiValueMap;
 import kr.co.maple.common.component.CommonParamsComponent;
 import kr.co.maple.common.model.ResDTO;
 import kr.co.maple.common.service.WebClientService;
+import kr.co.maple.common.util.DateUtil;
+import kr.co.maple.module.main.model.AchievementRankingDTO;
 import kr.co.maple.module.main.model.CharacterBasicDTO;
 import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.main.model.DojangRankingDTO;
@@ -25,6 +28,7 @@ import kr.co.maple.module.main.model.DojangRankingListDTO;
 import kr.co.maple.module.main.model.MainDTO;
 import kr.co.maple.module.main.model.RankingDTO;
 import kr.co.maple.module.main.model.RankingListDTO;
+import kr.co.maple.module.main.model.Top1DojangRankingDTO;
 import kr.co.maple.module.main.model.Top1LevelRankingDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class MainService {
 	private static final Logger log = LogManager.getLogger("kr.co.maple");
     private final WebClientService webClientService;
+    private final DateUtil dateUtil;
     @Autowired
     private CommonParamsComponent commonParamsComponent;
 	@Value("${maple.apiKey}")
@@ -43,29 +48,50 @@ public class MainService {
     @PreDestroy
     @Cacheable("characterRankingCache")
     public HttpEntity<ResDTO<MainDTO>> characterRankingOverall() {
+    	// yyyy-mm-dd
+        String currentDate = dateUtil.get(new Date(), 2); 
+        // yyyymmdd
+        String formatDate = dateUtil.get(new Date(), 10);
+        // yyyymmdd -> (yyyy-mm-dd) - 1day 
+        String previousDate = dateUtil.getDateFormatFrom(2, formatDate, -1);
     	// Top10 랭킹 정보
-        List<RankingDTO> baseTop10Rankings = getRankingList("0");
-        List<RankingDTO> rebootTop10Rankings = getRankingList("1");
-        List<DojangRankingDTO> dojangTop10Rankings = getDojangRankingList();
+        List<RankingDTO> baseTop10Rankings = getRankingList(currentDate, "0");
+        List<RankingDTO> rebootTop10Rankings = getRankingList(currentDate, "1");
+        List<DojangRankingDTO> dojangTop10Rankings = getDojangRankingList(currentDate);
         // 랭킹 1위 ocid
         CharacterIdDTO baseTop1OCID = getCharacterId(baseTop10Rankings.get(0).getCharacterName());
         // 랭킹 1위 캐릭터 기본 정보
-        CharacterBasicDTO characterBasic = getCharacterBasic(baseTop1OCID.getOcid());
+        CharacterBasicDTO characterBasicInfo = getCharacterBasic(previousDate, baseTop1OCID.getOcid());
         Top1LevelRankingDTO top1LevelRanking = Top1LevelRankingDTO.builder()
-        		.characterName(characterBasic.getCharacterName())
-        		.worldName(characterBasic.getWorldName())
-        		.characterLevel(characterBasic.getCharacterLevel())
-        		.characterClass(characterBasic.getCharacterClass())
-        		.characterExp(characterBasic.getCharacterExp())
-        		.characterImage(characterBasic.getCharacterImage())
+        		.characterName(characterBasicInfo.getCharacterName())
+        		.worldName(characterBasicInfo.getWorldName())
+        		.characterLevel(characterBasicInfo.getCharacterLevel())
+        		.characterClass(characterBasicInfo.getCharacterClass())
+        		.characterExp(characterBasicInfo.getCharacterExp())
+        		.characterImage(characterBasicInfo.getCharacterImage())
         		.build();
-        		
+        // 무릉도장 랭킹 1위 ocid
+        CharacterIdDTO dojangTop1OCID = getCharacterId(dojangTop10Rankings.get(0).getCharacterName());
+        // 무릉도장 랭킹 1위 캐릭터 기본 정보
+        CharacterBasicDTO characterDojangInfo = getCharacterBasic(previousDate, dojangTop1OCID.getOcid());
+        Top1DojangRankingDTO top1DojangRanking = Top1DojangRankingDTO.builder()
+        		.characterName(characterDojangInfo.getCharacterName())
+        		.worldName(characterDojangInfo.getWorldName())
+        		.characterLevel(characterDojangInfo.getCharacterLevel())
+        		.characterClass(characterDojangInfo.getCharacterClass())
+        		.dojangFloor(dojangTop10Rankings.get(0).getDojangFloor())
+        		.dojangTimeRecord(dojangTop10Rankings.get(0).getDojangTimeRecord())
+        		.characterImage(characterDojangInfo.getCharacterImage())
+        		.build();
+        
         MainDTO mainDTO = MainDTO.builder()
                 .baseRankings(baseTop10Rankings)
                 .rebootRankings(rebootTop10Rankings)
                 .dojangRankings(dojangTop10Rankings)
                 .top1LevelRanking(top1LevelRanking)
+                .top1DojangRanking(top1DojangRanking)
                 .build();
+        
         log.info("Top10 랭킹 리스트 및 Top1랭킹 정보 --> " + mainDTO);		
         return new ResponseEntity<>(
                 ResDTO.<MainDTO>builder()
@@ -77,8 +103,8 @@ public class MainService {
         );
     }
     // 일반월드, 리부트월드 Top10 랭킹 리스트
-    private List<RankingDTO> getRankingList(String worldType) {
-        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams("2023-12-31", worldType, "");
+    private List<RankingDTO> getRankingList(String date, String worldType) {
+        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, worldType, "");
         RankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/overall",
                 params,
@@ -88,8 +114,8 @@ public class MainService {
         return rankingDTOList.getRanking().subList(0, Math.min(rankingDTOList.getRanking().size(), 10));
     }
     // 무릉도장 Top10 랭킹 리스트
-    private List<DojangRankingDTO> getDojangRankingList() {
-        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams("2024-01-02", "", "1");
+    private List<DojangRankingDTO> getDojangRankingList(String date) {
+        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, "", "1");
         DojangRankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/dojang",
                 params,
@@ -98,6 +124,12 @@ public class MainService {
         );
         return rankingDTOList.getRanking().subList(0, Math.min(rankingDTOList.getRanking().size(), 10));
     }
+    // 업적 Top10 랭킹 리스트
+//    private List<AchievementRankingDTO> get<AchievementRankingList(String date) {
+//    	
+//    }
+    // 유니온 Top10 랭킹 리스트
+    
     // 캐릭터 식별자 조회
     private CharacterIdDTO getCharacterId(String characterName) {
     	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterCommonParams(characterName);
@@ -110,8 +142,8 @@ public class MainService {
     	return characterIdDTO;
     }
     // 캐릭터 기본 정보 조회
-    private CharacterBasicDTO getCharacterBasic(String ocid) {
-    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, "2024-01-02");
+    private CharacterBasicDTO getCharacterBasic(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
 		CharacterBasicDTO characterBasicDTO = webClientService.webClientGetApi(
 				BASE_URL + "/maplestory/v1/character/basic",
 				params,

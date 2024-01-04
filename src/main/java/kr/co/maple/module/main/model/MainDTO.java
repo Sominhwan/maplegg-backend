@@ -13,4 +13,7 @@ public class MainDTO {
 	private List<DojangRankingDTO> dojangRankings;
 	
 	private Top1LevelRankingDTO top1LevelRanking;
+	private Top1DojangRankingDTO top1DojangRanking;
+	private Top1AchievementRankingDTO top1AchievementRanking;
+	private Top1UnionRankingDTO top1UnionRanking;
 }
