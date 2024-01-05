@@ -19,15 +19,15 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("characterRankingCache");
-        cacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES));
+        cacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(240, TimeUnit.MINUTES));
         return cacheManager;
     } 
     // 매일 오전 8시 30분에 실행되면서 캐시를 갱신
     @CacheEvict(value = "characterRankingCache", allEntries = true)
     @Scheduled(cron = "0 30 8 * * *")
     public void evictAndRefreshCache() {}
-    // 1시간마다 캐시 갱신
+    // 4시간마다 캐시 갱신
     @Cacheable(value = "characterRankingCache")
-    @Scheduled(fixedRate = 3600000) // 1시간마다 (밀리초)
+    @Scheduled(fixedRate = 14400000) // 4시간마다 (밀리초)
     public void cacheCharacterRanking() {}
 }
