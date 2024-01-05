@@ -43,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 public class MainService {
 	private static final Logger log = LogManager.getLogger("kr.co.maple");
     private final WebClientService webClientService;
-    private final DateUtil dateUtil;
     @Autowired
     private CommonParamsComponent commonParamsComponent;
     @Autowired
@@ -144,6 +143,7 @@ public class MainService {
         RankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/overall",
                 params,
+                "x-nxopen-api-key",
                 API_KEY,
                 RankingListDTO.class
         );
@@ -155,6 +155,7 @@ public class MainService {
         DojangRankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/dojang",
                 params,
+                "x-nxopen-api-key",
                 API_KEY,
                 DojangRankingListDTO.class
         );
@@ -166,6 +167,7 @@ public class MainService {
     	AchievementRankingListDTO achievementRankingDTOList = webClientService.webClientGetApi(
 	            BASE_URL + "/maplestory/v1/ranking/achievement",
 	            params,
+                "x-nxopen-api-key",
 	            API_KEY,
 	            AchievementRankingListDTO.class
 	    );
@@ -177,6 +179,7 @@ public class MainService {
     	UnionRankingListDTO unionRankingDTOList = webClientService.webClientGetApi(
 	            BASE_URL + "/maplestory/v1/ranking/union",
 	            params,
+                "x-nxopen-api-key",
 	            API_KEY,
 	            UnionRankingListDTO.class
 	    );
@@ -188,6 +191,7 @@ public class MainService {
     	CharacterIdDTO characterIdDTO = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/id",
                 params,
+                "x-nxopen-api-key",
                 API_KEY,
                 CharacterIdDTO.class
         );
@@ -199,6 +203,7 @@ public class MainService {
 		CharacterBasicDTO characterBasicDTO = webClientService.webClientGetApi(
 				BASE_URL + "/maplestory/v1/character/basic",
 				params,
+                "x-nxopen-api-key",
 				API_KEY,
 				CharacterBasicDTO.class
 		); 

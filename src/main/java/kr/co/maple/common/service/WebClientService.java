@@ -11,21 +11,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class WebClientService {
-	private static final Logger log = LogManager.getLogger("kr.co.maple");
+	private static final Logger log = LogManager.getLogger("kr.co.WebbClient");
 	/**
 	 * 
-	 * @ 메서드 : webClientGetApi
+	 * @ method : webClientGetApi
 	 * @ 기능 : http get
 	 * @ params: *
 	 */
-    public <T> T webClientGetApi(String apiUrl, MultiValueMap<String, String> params, String apiKey, Class<T> responseType) {
+    public <T> T webClientGetApi(String apiUrl, MultiValueMap<String, String> params, String key, String value, Class<T> responseType) {
         WebClient webClient = WebClient.create(apiUrl);
 
         return webClient.method(HttpMethod.GET)
         		.uri(uriBuilder -> 
         				uriBuilder.queryParams(params).build()
 				)
-        		.header("x-nxopen-api-key", apiKey)
+        		.header(key, value)
         		.accept(MediaType.APPLICATION_JSON)
                 .retrieve()
 	            .onStatus(HttpStatus::is4xxClientError, response -> {
@@ -36,6 +36,32 @@ public class WebClientService {
 					log.info(response.statusCode()  + " 에러");
 					throw new RuntimeException("Internal Server Error");
 				})
+                .bodyToMono(responseType)
+                .block();
+    }
+	/**
+	 * 
+	 * @ method : webClientPostApi
+	 * @ 기능 : http post
+	 * @ params: *
+	 */
+    public <T> T webClientPostApi(String apiUrl, Object requestObject, String key, String value, Class<T> responseType) {
+        WebClient webClient = WebClient.create(apiUrl);
+
+        return webClient.method(HttpMethod.POST)
+                .uri(uriBuilder -> uriBuilder.build())
+                .header(key, value)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestObject)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, response -> {
+                    log.info(response.statusCode() + " 에러");
+                    throw new RuntimeException("Client Error");
+                })
+                .onStatus(HttpStatus::is5xxServerError, response -> {
+                    log.info(response.statusCode() + " 에러");
+                    throw new RuntimeException("Internal Server Error");
+                })
                 .bodyToMono(responseType)
                 .block();
     }

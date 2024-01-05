@@ -21,14 +21,15 @@ public class MapleApiTimeCheckComponent {
 
         if (currentHour > 8 || (currentHour == 8 && currentMinute >= 30)) {
             return processTimeCheck(0, 1, data);
-
         } else {
             return processTimeCheck(1, 2, data);
         }
     }
 
     private String processTimeCheck(int day1, int day2, int data) {
-        String formatDate = dateUtil.get(new Date(), 10);
+    	// yyyy.mm.dd
+        String formatDate = dateUtil.get(new Date(), 10); 
+        // yyyy.mm.dd - (day1 or day2)
         String previousDate = dateUtil.getDateFormatFrom(2, formatDate, data == 0 ? -day1 : -day2);
         return previousDate;
     }
