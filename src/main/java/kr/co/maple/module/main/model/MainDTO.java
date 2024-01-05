@@ -11,6 +11,7 @@ public class MainDTO {
 	private List<RankingDTO> baseRankings;
 	private List<RankingDTO> rebootRankings;
 	private List<DojangRankingDTO> dojangRankings;
+	private List<GuildRankingDTO> guildRankings;
 	
 	private Top1LevelRankingDTO top1LevelRanking;
 	private Top1DojangRankingDTO top1DojangRanking;

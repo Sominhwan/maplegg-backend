@@ -27,6 +27,8 @@ import kr.co.maple.module.main.model.CharacterBasicDTO;
 import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.main.model.DojangRankingDTO;
 import kr.co.maple.module.main.model.DojangRankingListDTO;
+import kr.co.maple.module.main.model.GuildRankingDTO;
+import kr.co.maple.module.main.model.GuildRankingListDTO;
 import kr.co.maple.module.main.model.MainDTO;
 import kr.co.maple.module.main.model.RankingDTO;
 import kr.co.maple.module.main.model.RankingListDTO;
@@ -65,6 +67,7 @@ public class MainService {
         List<DojangRankingDTO> dojangTop10Rankings = getDojangRankingList(currentDate);
         List<AchievementRankingDTO> achievementTop10Rankings = getAchievementRankingList(currentDate);
         List<UnionRankingDTO> unionTop10Rankings = getUnionRankingList(currentDate);
+        List<GuildRankingDTO> guildTop10Rankings = getGuildRankingLiist(currentDate, "2");
         // 랭킹 1위 ocid
         CharacterIdDTO baseTop1OCID = getCharacterId(baseTop10Rankings.get(0).getCharacterName());
         // 랭킹 1위 캐릭터 기본 정보
@@ -121,6 +124,7 @@ public class MainService {
                 .baseRankings(baseTop10Rankings)
                 .rebootRankings(rebootTop10Rankings)
                 .dojangRankings(dojangTop10Rankings)
+                .guildRankings(guildTop10Rankings)
                 .top1LevelRanking(top1LevelRanking)
                 .top1DojangRanking(top1DojangRanking)
                 .top1AchievementRanking(top1AchievementRanking)
@@ -184,6 +188,18 @@ public class MainService {
 	            UnionRankingListDTO.class
 	    );
     	return unionRankingDTOList.getRanking().subList(0, Math.min(unionRankingDTOList.getRanking().size(), 10));
+    }
+    // 길드 Top10 랭킹 리스트
+    private List<GuildRankingDTO> getGuildRankingLiist(String date, String rankingType) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleGuildRankingCommonParams(date, rankingType);
+    	GuildRankingListDTO guildRankingDTOList = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/ranking/guild",
+    			params,
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			GuildRankingListDTO.class
+		);
+    	return guildRankingDTOList.getRanking().subList(0, Math.min(guildRankingDTOList.getRanking().size(), 10));
     }
     // 캐릭터 식별자 조회
     private CharacterIdDTO getCharacterId(String characterName) {
