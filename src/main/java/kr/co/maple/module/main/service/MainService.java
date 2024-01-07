@@ -67,7 +67,7 @@ public class MainService {
         List<DojangRankingDTO> dojangTop10Rankings = getDojangRankingList(currentDate);
         List<AchievementRankingDTO> achievementTop10Rankings = getAchievementRankingList(currentDate);
         List<UnionRankingDTO> unionTop10Rankings = getUnionRankingList(currentDate);
-        List<GuildRankingDTO> guildTop10Rankings = getGuildRankingLiist(currentDate, "2");
+        List<GuildRankingDTO> guildTop10Rankings = getGuildRankingList(currentDate, "2");
         // 랭킹 1위 ocid
         CharacterIdDTO baseTop1OCID = getCharacterId(baseTop10Rankings.get(0).getCharacterName());
         // 랭킹 1위 캐릭터 기본 정보
@@ -190,7 +190,7 @@ public class MainService {
     	return unionRankingDTOList.getRanking().subList(0, Math.min(unionRankingDTOList.getRanking().size(), 10));
     }
     // 길드 Top10 랭킹 리스트
-    private List<GuildRankingDTO> getGuildRankingLiist(String date, String rankingType) {
+    private List<GuildRankingDTO> getGuildRankingList(String date, String rankingType) {
     	MultiValueMap<String, String> params = commonParamsComponent.mapleGuildRankingCommonParams(date, rankingType);
     	GuildRankingListDTO guildRankingDTOList = webClientService.webClientGetApi(
     			BASE_URL + "/maplestory/v1/ranking/guild",
