@@ -42,12 +42,14 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 //            } catch (IOException e) {}
 //        });
 //    }
-//    //양방향 데이터 통신할 떄 해당 메서드가 call 된다.
+    //양방향 데이터 통신할 떄 해당 메서드가 call 된다.
 //    @Override
 //    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+//    	System.out.println("로그 --> " + message);
+//    	 String jsonMessage = "{ \"message\": \"" + message.getPayload() + "\" }";
 //        //do something
 //        final String sessionId = session.getId();
-//        sendMessage(sessionId, message);
+//        sendMessage(sessionId, new TextMessage(jsonMessage));
 //    }
 //    
 //    //웹소켓 종료
@@ -65,15 +67,17 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 //    @Override
 //    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {}
 //
-//    private void sendMessage(String sessionId, WebSocketMessage<?> message) {
+//    private <T> void sendMessage(String sessionId, WebSocketMessage<?> message) {
 //        sessions.values().forEach(s -> {
 //            if(!s.getId().equals(sessionId) && s.isOpen()) {
 //                try {
-//                    s.sendMessage(message);
+//                    //s.sendMessage(message);
+//                    s.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
 //                } catch (IOException e) {}
 //            }
 //        });
 //    }
+
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
