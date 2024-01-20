@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
 import kr.co.maple.common.component.CommonParamsComponent;
+import kr.co.maple.module.characterInfo.model.CharacterPopularityDTO;
+import kr.co.maple.module.characterInfo.model.CharacterStatDTO;
 import kr.co.maple.module.main.model.AchievementRankingDTO;
 import kr.co.maple.module.main.model.AchievementRankingListDTO;
 import kr.co.maple.module.main.model.CharacterBasicDTO;
@@ -118,4 +120,27 @@ public class MapleCharacterApiService {
 		return characterBasicDTO;
     }  
     // 캐릭터 종합 능력치 정보 조회
+    public CharacterStatDTO getCharacterStat(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	CharacterStatDTO characterStatDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/stat",
+    			params,
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			CharacterStatDTO.class
+		);
+    	return characterStatDTO;
+    }
+    // 캐릭터 인기도 정보 조회
+    public CharacterPopularityDTO getCharacterPopularity(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	CharacterPopularityDTO characterPopularityDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/popularity",
+    			params,
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			CharacterPopularityDTO.class
+		);
+    	return characterPopularityDTO;
+    }
 }

@@ -42,7 +42,7 @@ public class CommonParamsComponent {
         params.add("character_name", characterName);
         return params;
     }
-	// 넥슨 Maple Api 캐릭터 기본 정보 조회 Common Params 
+	// 넥슨 Maple Api 캐릭터 정보 조회 Common Params 
     public MultiValueMap<String, String> mapleCharacterBasicCommonParams(String ocid, String date) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("ocid", ocid);
