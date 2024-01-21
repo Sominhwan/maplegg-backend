@@ -22,6 +22,7 @@ import kr.co.maple.module.main.model.RankingDTO;
 import kr.co.maple.module.main.model.RankingListDTO;
 import kr.co.maple.module.main.model.UnionRankingDTO;
 import kr.co.maple.module.main.model.UnionRankingListDTO;
+import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -142,5 +143,17 @@ public class MapleCharacterApiService {
     			CharacterPopularityDTO.class
 		);
     	return characterPopularityDTO;
+    }
+    // 캐릭터 장착 장비 정보 조회(캐시 장비 제외)
+    public CharacterItemEquipmentDTO getCharacterItemEquipment(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	CharacterItemEquipmentDTO characterItemEquipmentDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/item-equipment",
+    			params,
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			CharacterItemEquipmentDTO.class
+		);
+    	return characterItemEquipmentDTO;
     }
 }
