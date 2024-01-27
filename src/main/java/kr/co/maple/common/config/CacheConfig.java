@@ -30,7 +30,6 @@ public class CacheConfig {
     @Cacheable(value = "characterRankingCache")
     @Scheduled(fixedRate = 14400000) // 4시간마다 (밀리초)
     public void cacheCharacterRanking() {}
-    
     // 매일 오전 8시 30분에 실행되면서 캐시를 갱신
     @CacheEvict(value = "characterInfo", allEntries = true)
     @Scheduled(cron = "0 30 8 * * *")
@@ -39,7 +38,6 @@ public class CacheConfig {
     @Cacheable(value = "characterInfo")
     @Scheduled(fixedRate = 14400000) // 4시간마다 (밀리초)
     public void cacheCharacterInfo() {}
-    
     // 매일 오전 8시 30분에 실행되면서 캐시를 갱신
     @CacheEvict(value = "characterStatAndEquip", allEntries = true)
     @Scheduled(cron = "0 30 8 * * *")

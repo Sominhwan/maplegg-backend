@@ -7,4 +7,5 @@ import lombok.Data;
 @Builder
 public class CharacterStatAndEquipDTO {
 	private final CharacterItemEquipmentDTO characterItemEquipment;
+	private final CharacterAndroidEquipmentDTO characterAndroidEquipment;
 }
