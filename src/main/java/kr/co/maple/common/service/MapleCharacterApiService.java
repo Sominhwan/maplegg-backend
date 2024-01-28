@@ -23,6 +23,7 @@ import kr.co.maple.module.main.model.RankingListDTO;
 import kr.co.maple.module.main.model.UnionRankingDTO;
 import kr.co.maple.module.main.model.UnionRankingListDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterAndroidEquipmentDTO;
+import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -168,5 +169,17 @@ public class MapleCharacterApiService {
     			CharacterAndroidEquipmentDTO.class
 		);
     	return characterAndroidEquipmentDTO;
+    }
+    // 캐릭터 장착 캐시 장비 정보 조회
+    public CharacterCashitemEquipmentDTO getCharacterCashItemEquipment(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	CharacterCashitemEquipmentDTO characterCashitemEquipmentDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/cashitem-equipment",
+    			params,
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			CharacterCashitemEquipmentDTO.class
+		);
+    	return characterCashitemEquipmentDTO;
     }
 }
