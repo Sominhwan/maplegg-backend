@@ -48,7 +48,7 @@ public class StatAndEquipService {
 																.characterAndroidEquipment(characterAndroidEquipmentDTO)
 																.characterCashitemEquipment(characterCashitemEquipmentDTO)
 																.build();
-        log.info("캐릭터 장착 장비 정보  --> " + characterStatAndEquipDTO);
+     
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(0)

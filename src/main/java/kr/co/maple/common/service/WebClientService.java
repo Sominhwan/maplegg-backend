@@ -14,12 +14,22 @@ public class WebClientService {
 	private static final Logger log = LogManager.getLogger("kr.co.WebbClient");
 	/**
 	 * 
+	 * @ method : webClientBuilder
+	 * @ 기능 : WebClient 버퍼 크기 증가
+	 * @ params: WebClient
+	 */
+    private WebClient.Builder webClientBuilder() {
+        return WebClient.builder()
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5 * 1024 * 1024)); // 5MB
+    }
+	/**
+	 * 
 	 * @ method : webClientGetApi
 	 * @ 기능 : http get
 	 * @ params: *
 	 */
     public <T> T webClientGetApi(String apiUrl, MultiValueMap<String, String> params, String key, String value, Class<T> responseType) {
-        WebClient webClient = WebClient.create(apiUrl);
+        WebClient webClient = webClientBuilder().baseUrl(apiUrl).build();
 
         return webClient.method(HttpMethod.GET)
         		.uri(uriBuilder -> 
@@ -37,6 +47,12 @@ public class WebClientService {
 					throw new RuntimeException("Internal Server Error");
 				})
                 .bodyToMono(responseType)
+                .doOnError(error -> {
+                	log.info("eror --> " + error);
+                })
+                .doOnSuccess(responseBody -> {
+                	log.info("responseBody --> " + responseBody);
+                })
                 .block();
     }
 	/**

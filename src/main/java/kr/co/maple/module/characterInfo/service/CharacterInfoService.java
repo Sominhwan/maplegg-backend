@@ -49,8 +49,6 @@ public class CharacterInfoService {
 												.characterStatInfo(characterStatDTO)
 												.build();
 		
-		log.info("캐릭터 종합 능력치 정보 --> " + characterInfoDTO);
-
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(0)
