@@ -18,6 +18,7 @@ import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterAndroidEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
+import kr.co.maple.module.statAndEquip.model.CharacterPetEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterStatAndEquipDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -42,11 +43,13 @@ public class StatAndEquipService {
 		CharacterAndroidEquipmentDTO characterAndroidEquipmentDTO = mapleCharacterApiService.getCharacterAndroidEquipment(previousDate, ocid);
 		// 캐릭터 장착 캐시 장비 정보 조회
 		CharacterCashitemEquipmentDTO characterCashitemEquipmentDTO = mapleCharacterApiService.getCharacterCashItemEquipment(previousDate, ocid);
-
+		// 캐릭터 장착 펫 정보 조회
+		CharacterPetEquipmentDTO characterPetEquipmentDTO = mapleCharacterApiService.getCharacterPetEquipment(previousDate, ocid);
 		CharacterStatAndEquipDTO characterStatAndEquipDTO = CharacterStatAndEquipDTO.builder()
 																.characterItemEquipment(characterItemEquipmentDTO)
 																.characterAndroidEquipment(characterAndroidEquipmentDTO)
 																.characterCashitemEquipment(characterCashitemEquipmentDTO)
+																.characterPetEquipment(characterPetEquipmentDTO)
 																.build();
      
         return new ResponseEntity<>(

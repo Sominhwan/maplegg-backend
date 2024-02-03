@@ -9,4 +9,5 @@ public class CharacterStatAndEquipDTO {
 	private final CharacterItemEquipmentDTO characterItemEquipment;
 	private final CharacterAndroidEquipmentDTO characterAndroidEquipment;
 	private final CharacterCashitemEquipmentDTO characterCashitemEquipment;
+	private final CharacterPetEquipmentDTO characterPetEquipment;
 }
