@@ -52,8 +52,8 @@ public class MainService {
         // yyyymmdd -> (yyyy-mm-dd) - 1day 
         String previousDate = mapleApiTimeCheckComponent.timeCheck(new Date(), 1);
     	// Top10 랭킹 정보
-        List<RankingDTO> baseTop10Rankings = maleCharacterApiService.getRankingList(currentDate, "0");
-        List<RankingDTO> rebootTop10Rankings = maleCharacterApiService.getRankingList(currentDate, "1");
+        List<RankingDTO> baseTop10Rankings = maleCharacterApiService.getRankingList(currentDate, null, "0", null, null);
+        List<RankingDTO> rebootTop10Rankings = maleCharacterApiService.getRankingList(currentDate, null, "1", null, null);
         List<DojangRankingDTO> dojangTop10Rankings = maleCharacterApiService.getDojangRankingList(currentDate);
         List<AchievementRankingDTO> achievementTop10Rankings = maleCharacterApiService.getAchievementRankingList(currentDate);
         List<UnionRankingDTO> unionTop10Rankings = maleCharacterApiService.getUnionRankingList(currentDate);

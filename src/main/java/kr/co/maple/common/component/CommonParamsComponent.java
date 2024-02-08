@@ -7,11 +7,24 @@ import org.springframework.util.MultiValueMap;
 @Component
 public class CommonParamsComponent {
 	// 넥슨 Maple Api 랭킹 조회 Common Params 
-    public MultiValueMap<String, String> mapleRankingCommonParams(String date, String worldType, String difficulty) {
+    public MultiValueMap<String, String> mapleRankingCommonParams(String date, String worldName, String worldType, String characterClass, String ocid, String difficulty) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("date", date);
-        params.add("world_type", worldType);
-        params.add("difficulty", difficulty);
+        if(worldName != null) {
+        	params.add("world_name", worldName);
+        }
+        if(worldType != null) {
+        	params.add("world_type", worldType);
+        }
+        if(characterClass != null) {
+        	params.add("class", characterClass);
+        }
+        if(ocid != null) {
+        	params.add("ocid", ocid);
+        }
+        if(difficulty != null) {
+            params.add("difficulty", difficulty);
+        }
         return params;
     }
     // 넥슨 Maple Api 업적 랭킹 조회 Common Params

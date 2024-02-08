@@ -40,8 +40,9 @@ public class MapleCharacterApiService {
 	private String BASE_URL;
     
     // 일반월드, 리부트월드 Top10 랭킹 리스트
-    public List<RankingDTO> getRankingList(String date, String worldType) {
-        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, worldType, "");
+    public List<RankingDTO> getRankingList(String date, String worldName, String worldType, String characterClass, String ocid) {
+        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, worldName, worldType, characterClass, ocid, null);
+        System.out.println("zzz -->" + params);
         RankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/overall",
                 params,
@@ -53,7 +54,7 @@ public class MapleCharacterApiService {
     }
     // 무릉도장 Top10 랭킹 리스트
     public List<DojangRankingDTO> getDojangRankingList(String date) {
-        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, "", "1");
+        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, null, null, null, null, "1");
         DojangRankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/dojang",
                 params,
@@ -65,7 +66,7 @@ public class MapleCharacterApiService {
     }
     // 업적 Top10 랭킹 리스트
     public List<AchievementRankingDTO> getAchievementRankingList(String date) {
-    	MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, "", "");
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, null, null, null, null, null);
     	AchievementRankingListDTO achievementRankingDTOList = webClientService.webClientGetApi(
 	            BASE_URL + "/maplestory/v1/ranking/achievement",
 	            params,

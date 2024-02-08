@@ -1,6 +1,7 @@
 package kr.co.maple.module.characterInfo.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,7 @@ import kr.co.maple.module.characterInfo.model.CharacterPopularityDTO;
 import kr.co.maple.module.characterInfo.model.CharacterStatDTO;
 import kr.co.maple.module.main.model.CharacterBasicDTO;
 import kr.co.maple.module.main.model.CharacterIdDTO;
+import kr.co.maple.module.main.model.RankingDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -38,6 +40,22 @@ public class CharacterInfoService {
 		String ocid = characterIdDTO.getOcid();
 		// 캐릭터  기본 정보
 		CharacterBasicDTO characterBasicDTO = mapleCharacterApiService.getCharacterBasic(previousDate, ocid);
+		String worldType = "0";
+		if(characterBasicDTO.getWorldName().equals("리부트") || characterBasicDTO.getWorldName().equals("리부트2")) {
+			worldType = "1";
+		}
+		// 캐릭터 종합 랭킹 정보 조회
+		List<RankingDTO> characterOverallRankingDTO = mapleCharacterApiService.getRankingList(previousDate, null, worldType, null, ocid);
+		if(characterOverallRankingDTO.get(0).getSubClassName().equals("")) {
+			characterOverallRankingDTO.get(0).setSubClassName("전체 전직");
+		}
+		String characterClass = characterOverallRankingDTO.get(0).getClassName() + "-" + characterOverallRankingDTO.get(0).getSubClassName();
+		// 캐릭터 월드 랭킹 정보 조회
+		List<RankingDTO> characterWorldRankingDTO = mapleCharacterApiService.getRankingList(previousDate, characterBasicDTO.getWorldName(), worldType, null, ocid);
+		// 캐릭터 직업 랭킹(월드) 정보 조회
+		List<RankingDTO> characterWorldClassRankingDTO = mapleCharacterApiService.getRankingList(previousDate, characterBasicDTO.getWorldName(), worldType, characterClass, ocid);
+		// 캐릭터 직업 랭킹(전체) 정보 조회
+		List<RankingDTO> characterTotalClassRankingDTO = mapleCharacterApiService.getRankingList(previousDate, null, worldType, characterClass, ocid);
 		// 캐릭터 인기도
 		CharacterPopularityDTO characterPopularityDTO = mapleCharacterApiService.getCharacterPopularity(previousDate, ocid);
 		// 캐릭터 종합 능력치 
@@ -47,6 +65,10 @@ public class CharacterInfoService {
 												.characterBasicInfo(characterBasicDTO)
 												.characterPopularityInfo(characterPopularityDTO)
 												.characterStatInfo(characterStatDTO)
+												.characterOverallRanking(characterOverallRankingDTO.get(0))
+												.characterWorldRanking(characterWorldRankingDTO.get(0))
+												.characterWorldClassRanking(characterWorldClassRankingDTO.get(0))
+												.characterTotalClassRanking(characterTotalClassRankingDTO.get(0))
 												.build();
 		
         return new ResponseEntity<>(

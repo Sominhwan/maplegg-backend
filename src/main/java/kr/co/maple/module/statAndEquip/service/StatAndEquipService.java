@@ -46,11 +46,11 @@ public class StatAndEquipService {
 		// 캐릭터 장착 펫 정보 조회
 		CharacterPetEquipmentDTO characterPetEquipmentDTO = mapleCharacterApiService.getCharacterPetEquipment(previousDate, ocid);
 		CharacterStatAndEquipDTO characterStatAndEquipDTO = CharacterStatAndEquipDTO.builder()
-																.characterItemEquipment(characterItemEquipmentDTO)
-																.characterAndroidEquipment(characterAndroidEquipmentDTO)
-																.characterCashitemEquipment(characterCashitemEquipmentDTO)
-																.characterPetEquipment(characterPetEquipmentDTO)
-																.build();
+								.characterItemEquipment(characterItemEquipmentDTO)
+								.characterAndroidEquipment(characterAndroidEquipmentDTO)
+								.characterCashitemEquipment(characterCashitemEquipmentDTO)
+								.characterPetEquipment(characterPetEquipmentDTO)
+								.build();
      
         return new ResponseEntity<>(
                 ResDTO.builder()
