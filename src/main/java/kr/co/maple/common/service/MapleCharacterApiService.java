@@ -20,10 +20,13 @@ import kr.co.maple.module.main.model.GuildRankingDTO;
 import kr.co.maple.module.main.model.GuildRankingListDTO;
 import kr.co.maple.module.main.model.RankingDTO;
 import kr.co.maple.module.main.model.RankingListDTO;
+import kr.co.maple.module.main.model.TheseedRankingDTO;
+import kr.co.maple.module.main.model.TheseedRankingListDTO;
 import kr.co.maple.module.main.model.UnionRankingDTO;
 import kr.co.maple.module.main.model.UnionRankingListDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterAndroidEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
+import kr.co.maple.module.statAndEquip.model.CharacterDojangDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterPetEquipmentDTO;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +42,7 @@ public class MapleCharacterApiService {
 	@Value("${maple.url}")
 	private String BASE_URL;
     
-    // 일반월드, 리부트월드 Top10 랭킹 리스트
+    // 일반월드, 리부트월드 랭킹 리스트
     public List<RankingDTO> getRankingList(String date, String worldName, String worldType, String characterClass, String ocid) {
         MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, worldName, worldType, characterClass, ocid, null);
         System.out.println("zzz -->" + params);
@@ -52,9 +55,9 @@ public class MapleCharacterApiService {
         );
         return rankingDTOList.getRanking().subList(0, Math.min(rankingDTOList.getRanking().size(), 10));
     }
-    // 무릉도장 Top10 랭킹 리스트
-    public List<DojangRankingDTO> getDojangRankingList(String date) {
-        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, null, null, null, null, "1");
+    // 무릉도장 랭킹 리스트
+    public List<DojangRankingDTO> getDojangRankingList(String date, String ocid) {
+        MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, null, null, null, ocid, "1");
         DojangRankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/dojang",
                 params,
@@ -64,9 +67,21 @@ public class MapleCharacterApiService {
         );
         return rankingDTOList.getRanking().subList(0, Math.min(rankingDTOList.getRanking().size(), 10));
     }
-    // 업적 Top10 랭킹 리스트
-    public List<AchievementRankingDTO> getAchievementRankingList(String date) {
-    	MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, null, null, null, null, null);
+    // 더시드 랭킹 리스트
+    public List<TheseedRankingDTO> getTheseedRankingList(String date, String worldName, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, worldName, null, null, ocid, null);
+    	TheseedRankingListDTO theseedRankingDTOList = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/ranking/theseed", 
+    			params, 
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			TheseedRankingListDTO.class
+		);
+    	return theseedRankingDTOList.getRanking().subList(0, Math.min(theseedRankingDTOList.getRanking().size(), 10));
+    }
+    // 업적 랭킹 리스트
+    public List<AchievementRankingDTO> getAchievementRankingList(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, null, null, null, ocid, null);
     	AchievementRankingListDTO achievementRankingDTOList = webClientService.webClientGetApi(
 	            BASE_URL + "/maplestory/v1/ranking/achievement",
 	            params,
@@ -76,9 +91,9 @@ public class MapleCharacterApiService {
 	    );
     	return achievementRankingDTOList.getRanking().subList(0, Math.min(achievementRankingDTOList.getRanking().size(), 10));
     }
-    // 유니온 Top10 랭킹 리스트
-    public List<UnionRankingDTO> getUnionRankingList(String date) {
-    	MultiValueMap<String, String> params = commonParamsComponent.mapleUnionRankingCommonParams(date, "");
+    // 유니온 랭킹 리스트
+    public List<UnionRankingDTO> getUnionRankingList(String date, String worldName, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleUnionRankingCommonParams(date, worldName, ocid, null);
     	UnionRankingListDTO unionRankingDTOList = webClientService.webClientGetApi(
 	            BASE_URL + "/maplestory/v1/ranking/union",
 	            params,
@@ -88,7 +103,7 @@ public class MapleCharacterApiService {
 	    );
     	return unionRankingDTOList.getRanking().subList(0, Math.min(unionRankingDTOList.getRanking().size(), 10));
     }
-    // 길드 Top10 랭킹 리스트
+    // 길드 랭킹 리스트
     public List<GuildRankingDTO> getGuildRankingList(String date, String rankingType) {
     	MultiValueMap<String, String> params = commonParamsComponent.mapleGuildRankingCommonParams(date, rankingType);
     	GuildRankingListDTO guildRankingDTOList = webClientService.webClientGetApi(
@@ -195,5 +210,17 @@ public class MapleCharacterApiService {
     			CharacterPetEquipmentDTO.class
 		);
     	return characterPetEquipmentDTO;
+    }
+    // 캐릭터 무릉도장 최고 기록 정보 조회
+    public CharacterDojangDTO getCharacterDojang(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	CharacterDojangDTO characterDojangDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/dojang",
+    			params,
+    			"x-nxopen-api-key",
+    			API_KEY,
+    			CharacterDojangDTO.class
+		);
+    	return characterDojangDTO;
     }
 }

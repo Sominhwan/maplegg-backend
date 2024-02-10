@@ -36,10 +36,18 @@ public class CommonParamsComponent {
         return params;
     }
     // 넥슨 Maple Api 유니온 랭킹 조회 Common Params
-    public MultiValueMap<String, String> mapleUnionRankingCommonParams(String date, String page) {
+    public MultiValueMap<String, String> mapleUnionRankingCommonParams(String date, String worldName, String ocid, String page) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("date", date);
-        params.add("page", page);
+        if(worldName != null) {
+            params.add("world_name", worldName);
+        }
+        if(ocid != null) {
+            params.add("ocid", ocid);
+        }
+        if(page != null) {
+            params.add("page", page);
+        }
         return params;
     }
     // 넥슨 Maple Api 길드 랭킹 조회 Common Params(ranking_type = 0(주간 명성치), 1(플래그 레이스), 2(지하수로))

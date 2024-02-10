@@ -265,11 +265,65 @@ public class CharacterItemEquipmentDTO {
 	
 	@Data
 	private static class DragonEquipment {
-		
+		private String item_equipment_part;
+		private String equipment_slot;
+		private String item_name;
+		private String item_icon;
+		private String item_description;
+		private String item_shape_name;
+		private String item_shape_icon;
+		private String item_gender;
+		private ItemTotalOption item_total_option;
+		private ItemBaseOption item_base_option;
+		private int equipment_level_increase;
+		private ItemExceptionalOption item_exceptional_option;
+		private ItemAddOption item_add_option;
+		private int growth_exp;
+		private int growth_level;
+		private String scroll_upgrade;
+		private String cuttable_count;
+		private String golden_hammer_flag;
+		private String scroll_resilience_count;
+		private String scroll_upgradable_count;
+		private String soul_name;
+		private String soul_option;
+		private ItemEtcOption item_etc_option;
+		private String starforce;
+		private String starforce_scroll_flag;
+		private ItemStarForceOption item_starforce_option;
+		private int specail_ring_level;
+		private String date_expire;	
 	}
 	
 	@Data
 	private static class MechanicEquipment {
-		
+		private String item_equipment_part;
+		private String equipment_slot;
+		private String item_name;
+		private String item_icon;
+		private String item_description;
+		private String item_shape_name;
+		private String item_shape_icon;
+		private String item_gender;
+		private ItemTotalOption item_total_option;
+		private ItemBaseOption item_base_option;
+		private int equipment_level_increase;
+		private ItemExceptionalOption item_exceptional_option;
+		private ItemAddOption item_add_option;
+		private int growth_exp;
+		private int growth_level;
+		private String scroll_upgrade;
+		private String cuttable_count;
+		private String golden_hammer_flag;
+		private String scroll_resilience_count;
+		private String scroll_upgradable_count;
+		private String soul_name;
+		private String soul_option;
+		private ItemEtcOption item_etc_option;
+		private String starforce;
+		private String starforce_scroll_flag;
+		private ItemStarForceOption item_starforce_option;
+		private int specail_ring_level;
+		private String date_expire;	
 	}
 }

@@ -36,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MainService {
 	private static final Logger log = LogManager.getLogger("kr.co.maple");
-    private final MapleCharacterApiService maleCharacterApiService;
+    private final MapleCharacterApiService mapleCharacterApiService;
     @Autowired
     private MapleApiTimeCheckComponent mapleApiTimeCheckComponent;
 	@Value("${maple.apiKey}")
@@ -52,16 +52,16 @@ public class MainService {
         // yyyymmdd -> (yyyy-mm-dd) - 1day 
         String previousDate = mapleApiTimeCheckComponent.timeCheck(new Date(), 1);
     	// Top10 랭킹 정보
-        List<RankingDTO> baseTop10Rankings = maleCharacterApiService.getRankingList(currentDate, null, "0", null, null);
-        List<RankingDTO> rebootTop10Rankings = maleCharacterApiService.getRankingList(currentDate, null, "1", null, null);
-        List<DojangRankingDTO> dojangTop10Rankings = maleCharacterApiService.getDojangRankingList(currentDate);
-        List<AchievementRankingDTO> achievementTop10Rankings = maleCharacterApiService.getAchievementRankingList(currentDate);
-        List<UnionRankingDTO> unionTop10Rankings = maleCharacterApiService.getUnionRankingList(currentDate);
-        List<GuildRankingDTO> guildTop10Rankings = maleCharacterApiService.getGuildRankingList(currentDate, "2");
+        List<RankingDTO> baseTop10Rankings = mapleCharacterApiService.getRankingList(currentDate, null, "0", null, null);
+        List<RankingDTO> rebootTop10Rankings = mapleCharacterApiService.getRankingList(currentDate, null, "1", null, null);
+        List<DojangRankingDTO> dojangTop10Rankings = mapleCharacterApiService.getDojangRankingList(currentDate, null);
+        List<AchievementRankingDTO> achievementTop10Rankings = mapleCharacterApiService.getAchievementRankingList(currentDate, null);
+        List<UnionRankingDTO> unionTop10Rankings = mapleCharacterApiService.getUnionRankingList(currentDate, null, null);
+        List<GuildRankingDTO> guildTop10Rankings = mapleCharacterApiService.getGuildRankingList(currentDate, "2");
         // 랭킹 1위 ocid
-        CharacterIdDTO baseTop1OCID = maleCharacterApiService.getCharacterId(baseTop10Rankings.get(0).getCharacterName());
+        CharacterIdDTO baseTop1OCID = mapleCharacterApiService.getCharacterId(baseTop10Rankings.get(0).getCharacterName());
         // 랭킹 1위 캐릭터 기본 정보
-        CharacterBasicDTO characterBasicInfo = maleCharacterApiService.getCharacterBasic(previousDate, baseTop1OCID.getOcid());
+        CharacterBasicDTO characterBasicInfo = mapleCharacterApiService.getCharacterBasic(previousDate, baseTop1OCID.getOcid());
         Top1LevelRankingDTO top1LevelRanking = Top1LevelRankingDTO.builder()
         		.characterName(characterBasicInfo.getCharacterName())
         		.worldName(characterBasicInfo.getWorldName())
@@ -71,9 +71,9 @@ public class MainService {
         		.characterImage(characterBasicInfo.getCharacterImage())
         		.build();
         // 무릉도장 랭킹 1위 ocid
-        CharacterIdDTO dojangTop1OCID = maleCharacterApiService.getCharacterId(dojangTop10Rankings.get(0).getCharacterName());
+        CharacterIdDTO dojangTop1OCID = mapleCharacterApiService.getCharacterId(dojangTop10Rankings.get(0).getCharacterName());
         // 무릉도장 랭킹 1위 캐릭터 기본 정보
-        CharacterBasicDTO characterDojangInfo = maleCharacterApiService.getCharacterBasic(previousDate, dojangTop1OCID.getOcid());
+        CharacterBasicDTO characterDojangInfo = mapleCharacterApiService.getCharacterBasic(previousDate, dojangTop1OCID.getOcid());
         Top1DojangRankingDTO top1DojangRanking = Top1DojangRankingDTO.builder()
         		.characterName(characterDojangInfo.getCharacterName())
         		.worldName(characterDojangInfo.getWorldName())
@@ -84,9 +84,9 @@ public class MainService {
         		.characterImage(characterDojangInfo.getCharacterImage())
         		.build();
         // 업적 랭킹 1위 ocid
-        CharacterIdDTO acheivementTop1OCID = maleCharacterApiService.getCharacterId(achievementTop10Rankings.get(0).getCharacterName());
+        CharacterIdDTO acheivementTop1OCID = mapleCharacterApiService.getCharacterId(achievementTop10Rankings.get(0).getCharacterName());
         // 업적 랭킹 1위 캐릭터 기본 정보
-        CharacterBasicDTO characterAchievementInfo = maleCharacterApiService.getCharacterBasic(previousDate, acheivementTop1OCID.getOcid());
+        CharacterBasicDTO characterAchievementInfo = mapleCharacterApiService.getCharacterBasic(previousDate, acheivementTop1OCID.getOcid());
         Top1AchievementRankingDTO top1AchievementRanking = Top1AchievementRankingDTO.builder()
         		.characterName(characterAchievementInfo.getCharacterName())
         		.worldName(characterAchievementInfo.getWorldName())
@@ -97,9 +97,9 @@ public class MainService {
         		.characterImage(characterAchievementInfo.getCharacterImage())
         		.build();
         // 유니온 랭킹 1위 ocid
-        CharacterIdDTO unionTop1OCID = maleCharacterApiService.getCharacterId(unionTop10Rankings.get(0).getCharacterName());
+        CharacterIdDTO unionTop1OCID = mapleCharacterApiService.getCharacterId(unionTop10Rankings.get(0).getCharacterName());
         // 유니온 랭킹 1위 캐릭터 기본 정보
-        CharacterBasicDTO characterUnionInfo = maleCharacterApiService.getCharacterBasic(previousDate, unionTop1OCID.getOcid());
+        CharacterBasicDTO characterUnionInfo = mapleCharacterApiService.getCharacterBasic(previousDate, unionTop1OCID.getOcid());
         Top1UnionRankingDTO top1UnionRanking = Top1UnionRankingDTO.builder()
         		.characterName(characterUnionInfo.getCharacterName())
         		.worldName(characterUnionInfo.getWorldName())
