@@ -29,6 +29,7 @@ import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterDojangDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterPetEquipmentDTO;
+import kr.co.maple.module.union.model.UnionDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,7 +46,6 @@ public class MapleCharacterApiService {
     // 일반월드, 리부트월드 랭킹 리스트
     public List<RankingDTO> getRankingList(String date, String worldName, String worldType, String characterClass, String ocid) {
         MultiValueMap<String, String> params = commonParamsComponent.mapleRankingCommonParams(date, worldName, worldType, characterClass, ocid, null);
-        System.out.println("zzz -->" + params);
         RankingListDTO rankingDTOList = webClientService.webClientGetApi(
                 BASE_URL + "/maplestory/v1/ranking/overall",
                 params,
@@ -222,5 +222,17 @@ public class MapleCharacterApiService {
     			CharacterDojangDTO.class
 		);
     	return characterDojangDTO;
+    }
+    // 캐릭터 유니온 정보 조회
+    public UnionDTO getCharacterUnion(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	UnionDTO unionDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/user/union",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			UnionDTO.class
+		);
+    	return unionDTO;  			
     }
 }
