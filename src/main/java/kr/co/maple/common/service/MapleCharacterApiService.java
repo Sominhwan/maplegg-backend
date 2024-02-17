@@ -29,6 +29,7 @@ import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterDojangDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterPetEquipmentDTO;
+import kr.co.maple.module.union.model.UnionArtifactDTO;
 import kr.co.maple.module.union.model.UnionDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -234,5 +235,17 @@ public class MapleCharacterApiService {
     			UnionDTO.class
 		);
     	return unionDTO;  			
+    }
+    // 캐릭터 유니온 아티팩트 정보 조회
+    public UnionArtifactDTO getCharacterUnionArtifact(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	UnionArtifactDTO unionArtifactDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/user/union-artifact",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			UnionArtifactDTO.class
+		);
+    	return unionArtifactDTO;
     }
 }

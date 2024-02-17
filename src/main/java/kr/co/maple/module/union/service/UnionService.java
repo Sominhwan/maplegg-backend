@@ -15,6 +15,7 @@ import kr.co.maple.common.model.ResDTO;
 import kr.co.maple.common.service.MapleCharacterApiService;
 import kr.co.maple.module.main.model.CharacterIdDTO;
 import kr.co.maple.module.union.model.CharacterUnionDTO;
+import kr.co.maple.module.union.model.UnionArtifactDTO;
 import kr.co.maple.module.union.model.UnionDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -34,9 +35,12 @@ public class UnionService {
 		String ocid = characterIdDTO.getOcid();
 		// 유니온 정보 조회
 		UnionDTO unionDTO = mapleCharacterApiService.getCharacterUnion(previousDate, ocid);
-		
+		// 유니온 아티팩트 정보 조회
+		UnionArtifactDTO unionArtifactDTO = mapleCharacterApiService.getCharacterUnionArtifact(previousDate, ocid);
+
 		CharacterUnionDTO characterUnionDTO = CharacterUnionDTO.builder()
 											  	.union(unionDTO)
+											  	.unionArtifact(unionArtifactDTO)
 											  	.build();
         return new ResponseEntity<>(	
                 ResDTO.builder()
