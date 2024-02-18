@@ -31,6 +31,7 @@ import kr.co.maple.module.statAndEquip.model.CharacterItemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterPetEquipmentDTO;
 import kr.co.maple.module.union.model.UnionArtifactDTO;
 import kr.co.maple.module.union.model.UnionDTO;
+import kr.co.maple.module.union.model.UnionRaiderDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -247,5 +248,17 @@ public class MapleCharacterApiService {
     			UnionArtifactDTO.class
 		);
     	return unionArtifactDTO;
+    }
+    // 캐릭터 유니온 공격대 정보 조회
+    public UnionRaiderDTO getCharacterUnionRaider(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	UnionRaiderDTO unionRaiderDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/user/union-raider",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			UnionRaiderDTO.class
+		);
+    	return unionRaiderDTO;
     }
 }

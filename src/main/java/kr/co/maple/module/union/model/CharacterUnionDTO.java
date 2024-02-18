@@ -8,4 +8,5 @@ import lombok.Data;
 public class CharacterUnionDTO {
 	UnionDTO union;
 	UnionArtifactDTO unionArtifact;
+	UnionRaiderDTO unionRaider;
 }
