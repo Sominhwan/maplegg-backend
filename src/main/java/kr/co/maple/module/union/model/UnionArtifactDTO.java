@@ -23,7 +23,7 @@ public class UnionArtifactDTO {
 		private String date_expire;
 		private int level;
 		private String crystal_option_name_1;
-		private String crpstal_option_name_2;
-		private String crpstal_option_name_3;
+		private String crystal_option_name_2;
+		private String crystal_option_name_3;
 	}
 }
