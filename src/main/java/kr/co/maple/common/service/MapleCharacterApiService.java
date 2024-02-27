@@ -24,6 +24,8 @@ import kr.co.maple.module.main.model.TheseedRankingDTO;
 import kr.co.maple.module.main.model.TheseedRankingListDTO;
 import kr.co.maple.module.main.model.UnionRankingDTO;
 import kr.co.maple.module.main.model.UnionRankingListDTO;
+import kr.co.maple.module.skillAndSymbol.model.HexamatrixDTO;
+import kr.co.maple.module.skillAndSymbol.model.HexamatrixStatDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterAndroidEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterDojangDTO;
@@ -260,5 +262,29 @@ public class MapleCharacterApiService {
     			UnionRaiderDTO.class
 		);
     	return unionRaiderDTO;
+    }
+    // 캐릭터 hexa 코어 정보 조회
+    public HexamatrixDTO getCharacterHexamatrix(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	HexamatrixDTO hexamatrixDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/hexamatrix",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			HexamatrixDTO.class
+		);
+    	return hexamatrixDTO;
+    }
+    // 캐릭터 hexa 매트릭스 설정 hexa 스탯 정보 조회
+    public HexamatrixStatDTO getCharacterHexamatrixStat(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	HexamatrixStatDTO hexamatrixStatDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/hexamatrix-stat",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			HexamatrixStatDTO.class
+		);
+    	return hexamatrixStatDTO;
     }
 }

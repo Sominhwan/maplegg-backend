@@ -18,7 +18,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("characterRankingCache", "characterInfo", "characterStatAndEquip", "characterUnion");
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("characterRankingCache", "characterInfo", "characterStatAndEquip", "characterUnion", "characterSkillAndSymbol");
         cacheManager.setCaffeine(Caffeine.newBuilder().expireAfterWrite(240, TimeUnit.MINUTES));
         return cacheManager;
     } 
@@ -54,4 +54,12 @@ public class CacheConfig {
     @Cacheable(value = "characterUnion")
     @Scheduled(fixedRate = 14400000) // 4시간마다 (밀리초)
     public void cacheCharacterUnion() {}
+    // 매일 오전 8시 30분에 실행되면서 캐시를 갱신 (캐릭터 정보 스킬 및 심볼)
+    @CacheEvict(value = "characterSkillAndSymbol", allEntries = true)
+    @Scheduled(cron = "0 30 8 * * *")
+    public void evictAndRefreshCache5() {}
+    // 4시간마다 캐시 갱신 (캐릭터 정보 유니온)
+    @Cacheable(value = "characterSkillAndSymbol")
+    @Scheduled(fixedRate = 14400000) // 4시간마다 (밀리초)
+    public void cacheCharacterStatAndSymbol() {}
 }
