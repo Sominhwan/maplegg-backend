@@ -19,6 +19,7 @@ import kr.co.maple.module.main.model.MainDTO;
 import kr.co.maple.module.skillAndSymbol.model.HexamatrixDTO;
 import kr.co.maple.module.skillAndSymbol.model.HexamatrixStatDTO;
 import kr.co.maple.module.skillAndSymbol.model.SkillAndSymbolDTO;
+import kr.co.maple.module.skillAndSymbol.model.VmatrixDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,10 +40,13 @@ public class SkillAndSymbolService {
         HexamatrixDTO hexamatrixDTO = mapleCharacterApiService.getCharacterHexamatrix(previousDate, ocid);
 		// hexa 매트릭스 설정 hexa 스탯 정보 조회
         HexamatrixStatDTO hexamatrixStatDTO = mapleCharacterApiService.getCharacterHexamatrixStat(previousDate, ocid);
+        // v매트릭스 정보 조회
+        VmatrixDTO vmatrixDTO = mapleCharacterApiService.getCharacterVmatrix(previousDate, ocid);
         
         SkillAndSymbolDTO skillAndSymbolDTO = SkillAndSymbolDTO.builder()
         										.hexamatrix(hexamatrixDTO)
         										.hexamatrixStat(hexamatrixStatDTO)
+        										.vmatrix(vmatrixDTO)
         										.build();
         return new ResponseEntity<>(
                 ResDTO.builder()

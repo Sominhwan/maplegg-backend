@@ -26,6 +26,7 @@ import kr.co.maple.module.main.model.UnionRankingDTO;
 import kr.co.maple.module.main.model.UnionRankingListDTO;
 import kr.co.maple.module.skillAndSymbol.model.HexamatrixDTO;
 import kr.co.maple.module.skillAndSymbol.model.HexamatrixStatDTO;
+import kr.co.maple.module.skillAndSymbol.model.VmatrixDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterAndroidEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterDojangDTO;
@@ -286,5 +287,17 @@ public class MapleCharacterApiService {
     			HexamatrixStatDTO.class
 		);
     	return hexamatrixStatDTO;
+    }
+    // 캐릭터 v매트릭스 정보 조회
+    public VmatrixDTO getCharacterVmatrix(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	VmatrixDTO vmatrixDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/vmatrix",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			VmatrixDTO.class
+		);
+		return vmatrixDTO;
     }
 }
