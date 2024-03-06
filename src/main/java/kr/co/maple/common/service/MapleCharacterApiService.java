@@ -26,6 +26,7 @@ import kr.co.maple.module.main.model.UnionRankingDTO;
 import kr.co.maple.module.main.model.UnionRankingListDTO;
 import kr.co.maple.module.skillAndSymbol.model.HexamatrixDTO;
 import kr.co.maple.module.skillAndSymbol.model.HexamatrixStatDTO;
+import kr.co.maple.module.skillAndSymbol.model.SymbolEquipmentDTO;
 import kr.co.maple.module.skillAndSymbol.model.VmatrixDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterAndroidEquipmentDTO;
 import kr.co.maple.module.statAndEquip.model.CharacterCashitemEquipmentDTO;
@@ -299,5 +300,17 @@ public class MapleCharacterApiService {
     			VmatrixDTO.class
 		);
 		return vmatrixDTO;
+    }
+    // 캐릭터 장착 심볼 정보 조회
+    public SymbolEquipmentDTO getCharacterSymbolEquipment(String date, String ocid) {
+    	MultiValueMap<String, String> params = commonParamsComponent.mapleCharacterBasicCommonParams(ocid, date);
+    	SymbolEquipmentDTO symbolEquipmentDTO = webClientService.webClientGetApi(
+    			BASE_URL + "/maplestory/v1/character/symbol-equipment",
+    			params,
+       			"x-nxopen-api-key",
+    			API_KEY,
+    			SymbolEquipmentDTO.class
+		);
+    	return symbolEquipmentDTO;
     }
 }

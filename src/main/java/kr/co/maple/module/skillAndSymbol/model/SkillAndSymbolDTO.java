@@ -9,4 +9,5 @@ public class SkillAndSymbolDTO {
 	private HexamatrixDTO hexamatrix;
 	private HexamatrixStatDTO hexamatrixStat;
 	private VmatrixDTO vmatrix;
+	private SymbolEquipmentDTO symbolEquipment;
 }
